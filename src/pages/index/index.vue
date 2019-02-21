@@ -77,7 +77,6 @@ data(){
   })
   request('https://www.zhengzhicheng.cn/api/public/v1/home/floordata').then(res=>{
     this.floors=res.data.message
-    console.log(this.floors)
   })
  }
 }

@@ -18,7 +18,7 @@
             </view>
             <view class="floor-body">
               <block v-for="(subItem,subIndex) in item.children" :key="subIndex">
-              <view class="floor-body-item">
+              <view class="floor-body-item" @tap="toGoodList(subItem.cat_name)">
                 <image :src="subItem.cat_icon"></image>
                 <view>{{subItem.cat_name}}</view>
               </view>
@@ -33,6 +33,7 @@
 <script>
 import Search from '@/components/search'
 import request from '@/utils/request'
+import { setTimeout } from 'timers';
 export default{
   data(){
     return{
@@ -47,7 +48,15 @@ export default{
   methods: {
     changeTabIndex(index){
       this.tabIndex=index
-      this.cateList=this.cates[index]
+      this.cateList=[]
+      setTimeout(()=>{
+          this.cateList=this.cates[index]
+        },0)
+      },
+      toGoodList(queryName){
+        wx.navigateTo({
+          url:'/pages/goodsList/main?'+'keyword='+queryName
+        })
       }
   },
   mounted(){

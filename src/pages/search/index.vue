@@ -7,10 +7,19 @@
           <input type="text"
           placeholder="请输入商品名称"
           focus
+          @input="getInputValue"
           v-model="inputValue"
           @confirm="handleQuery">
         </view>
-        <view class="cancel">取消</view>
+        <view class="cancel" 
+        v-show="inputValue"
+        @tap ="inputValue=''">取消</view>
+      </view>
+      <view class="search-tips" v-show="inputValue">
+        <block v-for="(item,index) in searchTips" :key="index">
+          <view class="search-item">{{item}}</view>
+        </block>
+        <view class="history-title"></view>
       </view>
     </view>
   </div>
@@ -19,13 +28,30 @@
   export default{
       data(){
         return{
-          inputValue:""
+          inputValue:"",
+          searchTips:[],
+          history:[]
         }
       },
       methods: {
+        getInputValue(event){
+          // 获取searchTips提示数据
+           getGoodsQsearch({
+            query: this.inputValue
+          }).then(res=>{
+            this.searchTips = res.data.message
+          })
+        },
         // 手机端，按下完成按钮触发
         // 模拟器中按下回车键触发
         handleQuery(){
+          // 把输入框的数据先存起来
+          this.history.unshift(this.inputValue)
+          // 去除重复的历史记录
+          this.history=[...new Set(this.inputValue)]
+          // 设置本地存储
+          wx.setStorageSync('history',this.history)
+          // 跳转到商品列表页
           wx.navigateTo({
             url:'/pages/goodsList/main?keyword='+this.inputValue
           })

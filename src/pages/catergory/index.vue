@@ -34,6 +34,7 @@
 import Search from '@/components/search'
 import request from '@/utils/request'
 import { setTimeout } from 'timers';
+import { getCategories } from '@/api';
 export default{
   data(){
     return{
@@ -60,7 +61,8 @@ export default{
       }
   },
   mounted(){
-      request('https://www.zhengzhicheng.cn/api/public/v1/categories').then(res=>{
+      // request('https://www.zhengzhicheng.cn/api/public/v1/categories')
+      getCategories().then(res=>{
         let {message}=res.data
         this.cates=message
         this.cateList=message[0]

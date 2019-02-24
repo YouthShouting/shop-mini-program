@@ -29,6 +29,7 @@
 </template>
 <script>
 import request from '@/utils/request'
+import { getGoodsSearch } from "@/api"
 export default{
   data(){
    return{
@@ -69,11 +70,16 @@ export default{
          wx.showLoading({
           title: '加载中',
         })
-        request('https://www.zhengzhicheng.cn/api/public/v1/goods/search','GET',{
-        query: this.keyword,
-        pagenum:this.pagenum,
-        pagesize:this.pagesize
-      }).then(res=>{
+        getGoodsSearch({
+          query: this.keyword,
+          pagenum:this.pagenum,
+          pagesize:this.pagesize
+        })
+        //   request('https://www.zhengzhicheng.cn/api/public/v1/goods/search','GET',{
+        //   query: this.keyword,
+        //   pagenum:this.pagenum,
+        //   pagesize:this.pagesize})
+      .then(res=>{
         // this.goodsList=res.data.message.goods
         let { goods } = res.data.message
         // console.log(goods)
@@ -93,6 +99,7 @@ export default{
      this.goodsList=[]
      this.pagenum=1
      this.hasMore=true
+      // 重新发送请求
      this.loadData()
     },
     gotoDetail(tapId){

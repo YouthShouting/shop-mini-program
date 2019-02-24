@@ -42,7 +42,8 @@
   </div>
 </template>
 <script>
-import request from '../../utils/request.js'
+import request from '@/utils/request.js'
+import { getIndexSwiper,getIndexMenu,getIndexFloor } from "@/api"
 import Search from '@/components/search'
 export default{
 data(){
@@ -69,7 +70,7 @@ data(){
   //     this.menus=res.data.data
   //     }
   // })
-  request('https://www.zhengzhicheng.cn/api/public/v1/home/swiperdata').then(res=>{
+/*   request('https://www.zhengzhicheng.cn/api/public/v1/home/swiperdata').then(res=>{
     this.imgUrl=res.data.message
   })
   request('https://www.zhengzhicheng.cn/api/public/v1/home/catitems').then(res=>{
@@ -77,7 +78,22 @@ data(){
   })
   request('https://www.zhengzhicheng.cn/api/public/v1/home/floordata').then(res=>{
     this.floors=res.data.message
-  })
+  }) */
+  this.loadData()
+ },
+ methods:{
+   loadData(){
+     getIndexSwiper().then(res=>{
+       this.imgUrl = res.data.data
+     })
+     getIndexMenu().then(res=>{
+       this.menus = res.data.data
+     })
+     getIndexFloor().then(res=>{
+       this.floors = res.data.data
+     })
+
+   }
  }
 }
 </script>

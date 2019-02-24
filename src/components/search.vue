@@ -25,7 +25,7 @@ export default {
     padding: 20rpx 16rpx;
   }
 .search .input{
-    font-size: 24rpx;
+    font-size: 30rpx;
     background-color: #fff;
     border-radius: 6rpx;
     color: #bbb;

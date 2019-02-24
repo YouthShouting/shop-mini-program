@@ -26,21 +26,21 @@
 </template>
 <script>
 import request from '@/utils/request'
+import {getGoodsDetail} from '@/api'
 export default{
 data(){
     return{
-      proDetailId:[],
-      proDetailData:[]
+      proDetailId:0,
+      proDetailData:{}
     }
   },
   onLoad(data){
     this.proDetailId=data.goods_id
-    // console.log(this.detailData)
-    request.get('goods/detail',{goods_id:this.proDetailId}).then(res=>{
-      // console.log(res)
-      let {message} =res.data
-      // this.proDetailData=message
-      // console.log(this.proDetailData)
+    // request.get('goods/detail',{goods_id:this.proDetailId})
+    getGoodsDetail({goods_id:this.proDetailId}).then(res=>{
+     this.proDetailData = res.data.message
+     // 因为小程序暂时还不支持 webp 图片格式，我们利用正则把 webp 图片改成 jpg
+      this.proDetailData.goods_introduce = this.proDetailData.goods_introduce.replace(/jpg?.+?.webp/g,'jpg');
     })
   }
 }

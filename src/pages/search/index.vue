@@ -1,30 +1,45 @@
 <template>
   <div>
+    <!-- 搜索框分区 -->
     <view class="search-wrapper">
-      <view class="search-content">
-        <view class="search-input">
-          <icon type="search" size="16"></icon>
-          <input type="text"
-          placeholder="请输入商品名称"
-          focus
-          @input="getInputValue"
-          v-model="inputValue"
-          @confirm="handleQuery">
+        <!-- 搜索框部分 -->
+        <view class="search-content">
+          <view class="search-input">
+            <icon type="search" size="16"></icon>
+            <input type="text"
+            placeholder="请输入商品名称"
+            focus
+            @input="getInputValue"
+            v-model="inputValue"
+            @confirm="handleQuery">
+          </view>
+          <button v-show="inputValue" class="cancel" @tap="clearInputValue" size="mini">取消</button>
         </view>
-        <view class="cancel" 
-        v-show="inputValue"
-        @tap ="inputValue=''">取消</view>
+        <!-- 搜索提示部分 -->
+        <scroll-view class="search-tips" v-show="inputValue">
+          <block v-for="(item,index) in searchTips" :key="index">
+            <view class="search-item" @tap="goToDetail(item.goods_id)">{{item.goods_name}}</view>
+          </block>
+      </scroll-view>
+     </view>
+      <!-- 搜索框 -->
+      <view class="history-wrapper" v-show="history.length > 0">
+      <view class="history-title">
+        历史搜索
+        <icon @tap="clearHistory" type="clear" size="14"></icon>
       </view>
-      <view class="search-tips" v-show="inputValue">
-        <block v-for="(item,index) in searchTips" :key="index">
-          <view class="search-item">{{item}}</view>
-        </block>
-        <view class="history-title"></view>
+        <view class="history-list">
+           <block v-for="(item,index) in history" :key="index">
+              <view class="history-item" @tap="ToGoodsList(item)">
+                {{ item }}
+              </view>
+          </block>
+        </view>
       </view>
-    </view>
-  </div>
+    </div>
 </template>
 <script>
+import { getGoodsQsearch } from "@/api"
   export default{
       data(){
         return{
@@ -32,6 +47,10 @@
           searchTips:[],
           history:[]
         }
+      },
+      // 获取本地历史存储
+      onLoad(){
+        this.history = wx.getStorageSync('history') || []
       },
       methods: {
         getInputValue(event){
@@ -47,14 +66,38 @@
         handleQuery(){
           // 把输入框的数据先存起来
           this.history.unshift(this.inputValue)
+          console.log(this.history)
           // 去除重复的历史记录
           this.history=[...new Set(this.inputValue)]
           // 设置本地存储
           wx.setStorageSync('history',this.history)
           // 跳转到商品列表页
+          this.inputValue=""
           wx.navigateTo({
             url:'/pages/goodsList/main?keyword='+this.inputValue
           })
+        },
+        // 清除搜索框的内容
+        clearInputValue(){
+          this.inputValue=""
+        },
+        // 跳转到详情页面
+        goToDetail(id){
+          this.inputValue=""
+          wx.navigateTo({
+            url:'/pages/goodsDetail/main?goods_id='+id
+          })
+        },
+        // 跳转到商品列表页
+        ToGoodsList(query){
+          this.inputValue=""
+          wx.navigateTo({
+            url:'/pages/goodsList/main?keyword='+query
+          })
+        },
+        clearHistory(){
+          this.history = []
+           wx.removeStorageSync('history')
         }
       }
   }

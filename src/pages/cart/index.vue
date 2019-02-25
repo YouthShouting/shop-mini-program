@@ -46,8 +46,8 @@
     </view>
     <!-- 底部结算 -->
     <div class="cart-total">
-      <div class="total-button">
-        <view class="iconfont icon-fuxuankuang_xuanzhong"></view>
+      <div class="total-button" @tap="choiceAll( allCount === cartLength )">
+        <view class="iconfont icon-fuxuankuang_xuanzhong" :class="{'icon-xuanze-kong' : allCount === cartLength}"></view>
         全选
       </div>
       <div class="total-center">
@@ -56,8 +56,8 @@
           包邮
         </div>
       </div>
-      <div class="accounts">
-        结算
+      <div class="accounts" @tap="calcAllPrice">
+        结算({{allCount}})
       </div>
     </div>
   </div>
@@ -82,6 +82,24 @@ export default{
   onShow(){
     this.cartList = wx.getStorageSync('cartList') || {}
   },
+  // 监听总金额
+  computed: {
+    allPrice(){
+      let allPrice = 0
+      let allCount = 0
+      let cartList = this.cartList
+      for(let key in cartList){
+        if(cartList[key].selected){
+           allPrice += cartList[key].count * cartList[key].goods_price
+          allCount ++
+        }
+      }
+      this.cartLength = Object.keys(this.cartList).length
+      // console.log(this.cartLength)
+      this.allCount = allCount
+      return allPrice
+      }
+  },
   methods:{
     // 选择发货地址
     chooseAddress(){
@@ -103,13 +121,59 @@ export default{
          url: "/pages/goodsDetail/main?goods_id="+index 
          });
     },
+    // 选择单个商品
     choiceGoods(index){
+      console.log('choiceGoods')
       // console.log(index)
       // 让当前点击的复选框来回切换选中状态
        this.cartList[index].selected = !this.cartList[index].selected;
     },
+    // 全选 state 为boolean值，遍历所有的单选按钮，获取全选框的选中状态
+    choiceAll(state){
+      for(let key in this.cartList){
+        console.log("choiceAll")
+        this.cartList[key].selected = !state
+      }
+    },
+    // 计算加减个数
     calculateNum(index,num){
        console.log(index,num)
+       this.cartList[index].count += num
+       if(this.cartList[index].count < 1){
+         wx.showModal({
+           title: '提示', //提示的标题,
+           content: '是否删除该商品', //提示的内容,
+           showCancel: true, //是否显示取消按钮,
+           cancelText: '取消', //取消按钮的文字，默认为取消，最多 4 个字符,
+           cancelColor: '#000000', //取消按钮的文字颜色,
+           confirmText: '删除', //确定按钮的文字，默认为取消，最多 4 个字符,
+           confirmColor: '#f00', //确定按钮的文字颜色,
+           success: res => {
+             if (res.confirm) {
+               delete this.cartList[index]
+              // 把对象转成字符串再转成对象，处理成一个新的对象，
+              // 再赋值给this.cartList(解决mvp删除数据后view -- model 不同步的bug)
+              this.cartList = JSON.parse(JSON.stringify(this.cartList))
+
+             } else if (res.cancel) {
+               this.cartList[index].count = 1
+             }
+           }
+         });
+       }
+    },
+    calcAllPrice(){
+      // 如果本地没有token值，跳转到授权页面
+      if(!wx.getStorageSync('token')){
+        // 跳转到授权页面
+        wx.navigateTo({
+          url:'/pages/auth/main'
+        })
+      }else{
+        wx.navigateTo({
+          url:'/pages/pay/main'
+        })
+      }
     }
   }
 }

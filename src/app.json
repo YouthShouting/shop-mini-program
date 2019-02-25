@@ -7,7 +7,9 @@
     "pages/my/main", 
     "pages/goodsList/main",
     "pages/goodsDetail/main",
-    "pages/search/main"
+    "pages/search/main",
+    "pages/auth/main",
+    "pages/pay/main"
    ],
   "window": {
     "backgroundTextStyle": "light",

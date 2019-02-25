@@ -1,5 +1,66 @@
 <template>
-  <div>购物车</div>
+  <div>
+    <!-- 头部选择地址 -->
+    <view class="cart-top">
+      <block>
+        <view class="user">
+        <view>收货人：张三</view>
+        <view> 1234578901 </view>
+      </view>
+      <view class="address">
+        收货地址：广州
+      </view>
+      </block>
+      <block>
+        <view class="add-address">新增收货地址<span class="iconfont icon-icon-test"></span></view>
+      </block>
+    </view>
+    <!-- 购物车列表 -->
+    <view class="list-title"><span class="iconfont icon-dianpu"></span>优购生活馆</view>
+    <view class="ware-list">
+      <block>
+        <view class="ware-item">
+          <!-- 选择按钮 -->
+          <view class="choice-button">
+            <view class="iconfont icon-fuxuankuang_weixuanzhong"></view>
+          </view>
+          <!-- 内容主体 -->
+          <view class="ware-content">
+            <view class="ware-image">
+              <img src="https://img1.360buyimg.com/da/jfs/t1/17942/28/7802/71990/5c6fdba4Eb7c18f89/1bbdff6f3feb08a3.jpg" alt=""/>
+            </view>
+            <view class="ware-info">
+              <view>商品名称</view>
+              <view class="ware-info-btm">
+                <view class="ware-price">￥20.00</view>
+                <view class="calculate">
+                  <div class="rect">-</div>
+                  <div class="number">0</div>
+                  <div class="rect">-</div>
+                </view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </block>
+    </view>
+    <!-- 底部结算 -->
+    <div class="cart-total">
+      <div class="total-button">
+        <view class="iconfont icon-fuxuankuang_xuanzhong"></view>
+        全选
+      </div>
+      <div class="total-center">
+        <div class="colorRed">￥20.00</div>
+        <div class="price-tips">
+          包邮
+        </div>
+      </div>
+      <div class="accounts">
+        结算
+      </div>
+    </div>
+  </div>
 </template>
 <script>
 export default{
@@ -47,7 +108,7 @@ export default{
     background-color: red;
   }
 
-  .add-addresss {
+  .add-address {
     height: 180rpx;
     padding: 20rpx;
     box-sizing: border-box;
@@ -67,7 +128,7 @@ export default{
   padding-bottom: 100rpx;
 }
 
-.icon-xuanze-fill {
+.icon-fuxuankuang_xuanzhong {
   color: #ff2d4a;
 }
 
@@ -82,7 +143,13 @@ export default{
     text-align: center;
     margin-right: 20rpx;
     font-size: 32rpx;
+    .icon-dianpu{
+      font-size: 40rpx;
+      padding-right: 20rpx;
+      color:orange;
+    }
   }
+   
 }
 
 .ware-title {

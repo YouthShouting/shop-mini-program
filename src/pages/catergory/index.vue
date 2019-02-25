@@ -20,7 +20,7 @@
               <block v-for="(subItem,subIndex) in item.children" :key="subIndex">
               <view class="floor-body-item" @tap="toGoodList(subItem.cat_name)">
                 <!-- <image :src="subItem.cat_icon"></image> -->
-                <image :src="'https://autumnfish.cn.wx'+subItem.cat_icon"></image>
+                <image :src="'https://autumnfish.cn/wx/'+subItem.cat_icon"></image>
                 <view>{{subItem.cat_name}}</view>
               </view>
               </block>

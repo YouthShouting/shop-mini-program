@@ -1,18 +1,18 @@
 <template>
   <div>
     <!-- 头部选择地址 -->
-    <view class="cart-top">
-      <block>
+    <view class="cart-top" @tap="chooseAddress">
+      <block v-if="address.userName">
         <view class="user">
-        <view>收货人：张三</view>
-        <view> 1234578901 </view>
+        <view>收货人：{{address.userName}}</view>
+        <view> {{address.mobile}} </view>
       </view>
       <view class="address">
-        收货地址：广州
+        收货地址：{{address.addr}}
       </view>
       </block>
-      <block>
-        <view class="add-address">新增收货地址<span class="iconfont icon-icon-test"></span></view>
+      <block v-else>
+        <view class="add-address">新增收货地址 <span class="iconfont icon-icon-test"></span></view>
       </block>
     </view>
     <!-- 购物车列表 -->
@@ -64,7 +64,29 @@
 </template>
 <script>
 export default{
-
+  data(){
+    return{
+      address:{
+        userName:"",
+        mobile:"",
+        addr:""
+      }
+    }
+  },
+  methods:{
+    chooseAddress(){
+       wx.chooseAddress({
+        success:(res)=> {
+          this.address = {
+            userName:res.userName,
+            mobile:res.telNumber,
+            addr:`${res.provinceName}${res.cityName}${res.countyName}${res.detailInfo}`
+          }
+          wx.setStorageSync('address',this.address);
+        }
+      })
+    }
+  }
 }
 </script>
 <style lang="scss">

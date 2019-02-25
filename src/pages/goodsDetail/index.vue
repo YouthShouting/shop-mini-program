@@ -38,11 +38,11 @@
         <span class="iconfont icon-kefu"></span>
         联系客服
       </view>
-      <view class="ft-left">
+      <navigator open-type="switchTab" url="/pages/cart/main" class="ft-left">
         <span class="iconfont icon-caigou-xianxing"></span>
         购物车
-      </view>
-      <view class="ft-right">加入购物车</view>
+      </navigator>
+      <view class="ft-right" @tap="addToCart(proDetailData.goods_id)">加入购物车</view>
       <view class="ft-right">立即购买</view>
     </view>
   </div>
@@ -61,7 +61,7 @@ data(){
     this.proDetailId=data.goods_id
     // request.get('goods/detail',{goods_id:this.proDetailId})
     getGoodsDetail({goods_id:this.proDetailId}).then(res=>{
-      console.log(res)
+      // console.log(res)
      this.proDetailData = res.data.message
      // 因为小程序暂时还不支持 webp 图片格式，我们利用正则把 webp 图片改成 jpg
       this.proDetailData.goods_introduce = this.proDetailData.goods_introduce.replace(/jpg?.+?.webp/g,'jpg');
@@ -77,6 +77,36 @@ data(){
       current: '', // 当前显示图片的http链接
       urls: imgUrls // 需要预览的图片http链接列表
     })
+    },
+    // 点击加入购物车，把商品加入购物车列表中
+    addToCart(id){
+      // 如果数据还没加载到就没有商品id和详情数据，直接返回，不用写加入购物车的逻辑
+      if(!id) return
+      // 反之 给当前的商品详情添加选中状态和添加商品数量
+      this.proDetailData.selected = true
+      this.proDetailData.count = 1
+      // 把当前商品详情数据添加到本地存储中是有条件的
+      // 1.如果本地存储中没有该商品就直接添加到购物车
+      // 2.如果本地存储中有该商品就把商品数量加一
+        let cartList=wx.getStorage('cartList') || {}
+      if(!cartList[id]){
+        console.log(1)
+         cartList[id]= this.proDetailData
+      } else {
+        // 存在相加
+        console.log(2)
+        cartList[id].count += this.proDetailData.count
+      }
+       // 把修改过的数据重新设置到本地存储
+      wx.setStorageSync('cartList',cartList)
+      wx.showToast({
+        title: '加入成功', //提示的内容,
+        icon: 'success', //图标,
+        duration: 1000, //延迟时间,
+        mask: true, //显示透明蒙层，防止触摸穿透,
+       
+      })
+      
     }
   }
 }

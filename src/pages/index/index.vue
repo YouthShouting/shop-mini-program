@@ -84,13 +84,14 @@ data(){
  methods:{
    loadData(){
      getIndexSwiper().then(res=>{
-       this.imgUrl = res.data.data
+      //  console.log(res)
+       this.imgUrl = res.data.message
      })
      getIndexMenu().then(res=>{
-       this.menus = res.data.data
+       this.menus = res.data.message
      })
      getIndexFloor().then(res=>{
-       this.floors = res.data.data
+       this.floors = res.data.message
      })
 
    }

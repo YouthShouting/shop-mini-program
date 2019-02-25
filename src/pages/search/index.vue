@@ -66,9 +66,8 @@ import { getGoodsQsearch } from "@/api"
         handleQuery(){
           // 把输入框的数据先存起来
           this.history.unshift(this.inputValue)
-          console.log(this.history)
           // 去除重复的历史记录
-          this.history=[...new Set(this.inputValue)]
+          this.history=[...new Set(this.history)]
           // 设置本地存储
           wx.setStorageSync('history',this.history)
           // 跳转到商品列表页

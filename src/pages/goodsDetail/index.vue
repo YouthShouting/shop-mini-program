@@ -1,26 +1,49 @@
 <template>
   <div>
-    <block v-for="(item,index) in proDetailData" :key="index">
-      <view class="swiper">
-      <block v-for="(subItem,subIndex) in item.pics" :key="subIndex">
-        <image class="slide-image" :src="subItem.pics_big"></image>
+    <!-- 轮播图 -->
+    <swiper class="swiper" 
+        indicator-dots
+        autoplay
+        circular
+        indicator-active-color="#eee">
+      <block 
+      v-for="(item,index) in proDetailData.pics" 
+      :key="index"
+      @tap="previewBigImg">
+        <swiper-item>
+          <image class="slide-image" mode="aspectFill" :src="item.pics_big"></image>
+        </swiper-item>
       </block>
-      <view class="goods-price">￥2.00</view>
-      <view class="goods-info">
-        {{item.goods_name}}
-        <view class="info-right">收藏</view>
-      </view>
-      <view>快递：免运费</view>
-      <view class="detail">
-        <view class="detail-title">促销：<em>满300减30</em></view>
-      </view>
+    </swiper>
+    <!-- 商品价格 -->
+    <view class="goods-price">￥ {{ proDetailData.goods_price }}</view>
+    <view class="goods-info">
+        <view class="info-left">
+          <!-- 商品信息 -->
+           {{ proDetailData.goods_name }}
+        </view>
+        <view class="info-right">
+          <span class="iconfont "></span>
+          收藏
+        </view>
     </view>
-    </block>
+    <view class="express">快递: <em>免运费</em></view>
+    <view class="detail">
+      <view class="detail-title">商品详情</view>
+      <view class="detail-content" v-html="proDetailData.goods_introduce"></view>
+    </view>
     <view class="footer">
-      <view class="contact">
-        <view class="ft-left"><span>联系客服</span><span>购物车</span></view>
-        <view class="ft-right"><span>加人购物车</span><span>立即购买</span></view>
+      <button class="contact" open-type="contact">打开客服聊天窗口</button>
+      <view class="ft-left">
+        <span class="iconfont "></span>
+        联系客服
       </view>
+      <view class="ft-left">
+        <span class="iconfont "></span>
+        购物车
+      </view>
+      <view class="ft-right">加入购物车</view>
+      <view class="ft-right">立即购买</view>
     </view>
   </div>
 </template>
@@ -38,10 +61,23 @@ data(){
     this.proDetailId=data.goods_id
     // request.get('goods/detail',{goods_id:this.proDetailId})
     getGoodsDetail({goods_id:this.proDetailId}).then(res=>{
+      console.log(res)
      this.proDetailData = res.data.message
      // 因为小程序暂时还不支持 webp 图片格式，我们利用正则把 webp 图片改成 jpg
       this.proDetailData.goods_introduce = this.proDetailData.goods_introduce.replace(/jpg?.+?.webp/g,'jpg');
     })
+  },
+  methods:{
+    previewBigImg(){
+      let imgUrl=[]
+      this.proDetailData.pics.forEach(v=>{
+        imgUrls.push(v.pics_big);
+      })
+    wx.previewImage({
+      current: '', // 当前显示图片的http链接
+      urls: imgUrls // 需要预览的图片http链接列表
+    })
+    }
   }
 }
 </script>
@@ -62,6 +98,13 @@ data(){
     padding:20rpx;
     padding-top:0;
     display: flex;
+    .info-left{
+        overflow : hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;/*行数n*/
+        -webkit-box-orient: vertical;
+    }
     .info-right{
         width:160rpx;
         text-align: center;
@@ -75,12 +118,26 @@ data(){
         flex-shrink: 0;
     }
 }
+.express{
+    display: flex;
+    padding-left:20rpx;
+    padding-bottom: 20rpx;
+    color: #666;
+    font-size:32rpx;
+    em{
+      margin-left: 30rpx;
+    }
+  }
 .detail{
     border-top:20rpx #eee solid;
     padding-bottom:120rpx;
     .detail-title{
         padding:20rpx;
         border-bottom:1px #eee solid;
+    }
+    // 解决富文本图片的间隙
+    .detail-content{
+      font-size: 0;
     }
 }
 .footer{

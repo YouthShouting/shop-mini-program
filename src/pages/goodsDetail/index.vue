@@ -88,7 +88,7 @@ data(){
       // 把当前商品详情数据添加到本地存储中是有条件的
       // 1.如果本地存储中没有该商品就直接添加到购物车
       // 2.如果本地存储中有该商品就把商品数量加一
-        let cartList=wx.getStorage('cartList') || {}
+        let cartList=wx.getStorageSync('cartList') || {}
       if(!cartList[id]){
         console.log(1)
          cartList[id]= this.proDetailData

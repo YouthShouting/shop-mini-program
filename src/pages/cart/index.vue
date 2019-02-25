@@ -18,25 +18,25 @@
     <!-- 购物车列表 -->
     <view class="list-title"><span class="iconfont icon-dianpu"></span>优购生活馆</view>
     <view class="ware-list">
-      <block>
-        <view class="ware-item">
+      <block v-for="(item,index) in cartList" :key="index">
+        <view class="ware-item" @tap="toDetail(index)">
           <!-- 选择按钮 -->
-          <view class="choice-button">
-            <view class="iconfont icon-fuxuankuang_weixuanzhong"></view>
+          <view class="choice-button" @tap.stop="choiceGoods(index)">
+            <view class="iconfont icon-xuanze-kong" :class ="{'icon-fuxuankuang_xuanzhong': item.selected}"></view>
           </view>
           <!-- 内容主体 -->
           <view class="ware-content">
             <view class="ware-image">
-              <img src="https://img1.360buyimg.com/da/jfs/t1/17942/28/7802/71990/5c6fdba4Eb7c18f89/1bbdff6f3feb08a3.jpg" alt=""/>
+              <img :src="item.goods_small_logo" alt=""/>
             </view>
             <view class="ware-info">
-              <view>商品名称</view>
+              <view>{{item.goods_name}}</view>
               <view class="ware-info-btm">
-                <view class="ware-price">￥20.00</view>
+                <view class="ware-price">￥{{item.goods_price}}.00</view>
                 <view class="calculate">
-                  <div class="rect">-</div>
-                  <div class="number">0</div>
-                  <div class="rect">-</div>
+                  <div class="rect" @tap.stop="calculateNum(index,-1)">-</div>
+                  <div class="number">{{item.count}}</div>
+                  <div class="rect" @tap.stop="calculateNum(index,1)">+</div>
                 </view>
               </view>
             </view>
@@ -51,7 +51,7 @@
         全选
       </div>
       <div class="total-center">
-        <div class="colorRed">￥20.00</div>
+        <div class="colorRed">￥{{ allPrice }}.00</div>
         <div class="price-tips">
           包邮
         </div>
@@ -70,10 +70,20 @@ export default{
         userName:"",
         mobile:"",
         addr:""
-      }
+      },
+      cartList:{},
+      allCount:0,
+      cartLength: 0
     }
   },
+  onLoad(){
+    this.address=wx.getStorageSync('address');
+  },
+  onShow(){
+    this.cartList = wx.getStorageSync('cartList') || {}
+  },
   methods:{
+    // 选择发货地址
     chooseAddress(){
        wx.chooseAddress({
         success:(res)=> {
@@ -82,9 +92,24 @@ export default{
             mobile:res.telNumber,
             addr:`${res.provinceName}${res.cityName}${res.countyName}${res.detailInfo}`
           }
+          // 把发货地址存到本地存储
           wx.setStorageSync('address',this.address);
         }
       })
+    },
+    // 跳转到商品详情页面
+    toDetail(index){
+      wx.navigateTo({
+         url: "/pages/goodsDetail/main?goods_id="+index 
+         });
+    },
+    choiceGoods(index){
+      // console.log(index)
+      // 让当前点击的复选框来回切换选中状态
+       this.cartList[index].selected = !this.cartList[index].selected;
+    },
+    calculateNum(index,num){
+       console.log(index,num)
     }
   }
 }
@@ -242,6 +267,7 @@ export default{
 
   .total-button {
     padding-left: 20px;
+    font-size: 26rpx;
     icon {
       margin-right: 10px;
     }

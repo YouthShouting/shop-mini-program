@@ -23,7 +23,7 @@
            {{ proDetailData.goods_name }}
         </view>
         <view class="info-right">
-          <span class="iconfont "></span>
+          <span class="iconfont icon-xingxing1"></span>
           收藏
         </view>
     </view>
@@ -35,11 +35,11 @@
     <view class="footer">
       <button class="contact" open-type="contact">打开客服聊天窗口</button>
       <view class="ft-left">
-        <span class="iconfont "></span>
+        <span class="iconfont icon-kefu"></span>
         联系客服
       </view>
       <view class="ft-left">
-        <span class="iconfont "></span>
+        <span class="iconfont icon-caigou-xianxing"></span>
         购物车
       </view>
       <view class="ft-right">加入购物车</view>
